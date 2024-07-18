@@ -25,13 +25,25 @@ class DahboardController extends Controller
             exit(redirect()->intended(route('users')));
         }
     }
+    public function reboot()
+    {
+        $this->check();
+        Process::run("sudo reboot");
+    }
     public function index()
     {
         $this->check();
+        $high_usages = Traffic::activeUsers()->orderBy('total', 'desc')->limit(15)->get();
         $u_online=0;
+        $u_online_drop=0;
         $list = Process::run("sudo lsof -i :" . env('PORT_SSH') . " -n | grep -v root | grep ESTABLISHED");
         $output = $list->output();
         $onlineuserlist = preg_split("/\r\n|\n|\r/", $output);
+
+        $list_drop = Process::run("sudo lsof -i :" . env('PORT_DROPBEAR') . " -n | grep ESTABLISHED");
+        $output_drop = $list_drop->output();
+        $onlineuserlist_drop = preg_split("/\r\n|\n|\r/", $output_drop);
+
         foreach ($onlineuserlist as $user) {
             $user = preg_replace("/\\s+/", " ", $user);
             if (strpos($user, ":AAAA") !== false) {
@@ -47,6 +59,38 @@ class DahboardController extends Controller
 
             }
         }
+        //Dropbear
+        if (file_exists("/var/www/html/app/storage/dropbear.json")) {
+            foreach ($onlineuserlist_drop as $user_drop) {
+                $user_drop = preg_replace("/\\s+/", " ", $user_drop);
+
+                $user_droparray = explode(" ", $user_drop);
+
+                if (!isset($user_droparray[8])) {
+                    $user_droparray[8] = null;
+                }
+                if (isset($user_droparray[8])) {
+                    $ip = explode('->', $user_droparray[8]);
+                    $ip = explode(':', $ip[1]);
+                    $user_dropip = $ip[0];
+                }
+                if (isset($user_droparray[1])) {
+                    $jsonFilePath = '/var/www/html/app/storage/dropbear.json';
+                    $jsonData = file_get_contents($jsonFilePath);
+                    $dataArray = json_decode($jsonData, true);
+                    $targetPID = $user_droparray[1];
+                    $foundUser = null;
+                    foreach ($dataArray as $item) {
+                        if (trim($item['PID']) === $targetPID) {
+                            $u_online_drop++;
+                        }
+                    }
+                }
+
+            }
+        }
+
+
         $free = shell_exec("free");
         $free = (string)trim($free);
         $free_arr = explode("\n", $free);
@@ -117,13 +161,46 @@ class DahboardController extends Controller
         $all_user = Users::count();
         $active_user = Users::where('status', 'active')->count();
         $deactive_user = Users::where('status', 'deactive')->count();
+        $expired_user = Users::where('status', 'expired')->count();
+        $traffic_user = Users::where('status', 'traffic')->count();
         $traffic_total = Traffic::sum('total');
 
         $traffic_total = formatBytes(($traffic_total*1024)*1024);
 
         $alluser=$all_user;
-        $online_user=$u_online;
-        return view('dashboard.home', compact('alluser','active_user','deactive_user','online_user','cpu_free','ram_free','disk_free','traffic_total','total'));
+        $online_user=$u_online+$u_online_drop;
+        return view('dashboard.home', compact('alluser','active_user','expired_user','traffic_user','deactive_user','online_user','cpu_free','ram_free','disk_free','traffic_total','total','high_usages'));
+    }
+
+    public function usage()
+    {
+        $free = shell_exec("free");
+        $free = (string)trim($free);
+        $free_arr = explode("\n", $free);
+        $mem = explode(" ", $free_arr[1]);
+        $mem = array_filter($mem, function ($value) {
+            return $value !== NULL && $value !== false && $value !== "";
+        });
+        $mem = array_merge($mem);
+        $memtotal = round($mem[1] / 1000000, 2);
+        $memused = round($mem[2] / 1000000, 2);
+        $memfree = round($mem[3] / 1000000, 2);
+        $memtotal = str_replace(" GB", "", $memtotal);
+        $memused = str_replace(" GB", "", $memused);
+        $memfree = str_replace(" GB", "", $memfree);
+        $memtotal = str_replace(" MB", "", $memtotal);
+        $memused = str_replace(" MB", "", $memused);
+        $memfree = str_replace(" MB", "", $memfree);
+        $usedperc = 100 / $memtotal * $memused;
+        $exec_loads = sys_getloadavg();
+        $exec_cores = Process::run("grep -P '^processor' /proc/cpuinfo|wc -l");
+        $exec_cores = $exec_cores->output();
+        $exec_cores = trim($exec_cores);
+        $cpu = round($exec_loads[1] / ($exec_cores + 1) * 100, 0);
+        $cpu_free = round($cpu);
+        $ram_free = round($usedperc);
+        echo json_encode(array("cpuLoad" => $cpu_free, "ramUsage" => $ram_free));
+
     }
 
 }

@@ -270,6 +270,30 @@
                         </div>
 
                         <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTraffic">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTraffic" aria-expanded="false" aria-controls="collapseTraffic">
+                                    Add Traffic
+                                </button>
+                            </h2>
+                            <div id="collapseTraffic" class="accordion-collapse collapse" aria-labelledby="headingTraffic" data-bs-parent="#accordionExample">
+                                <div class="accordion-body" dir="ltr">
+                                    <a href="{{$path}}cp/settings/api" target="_blank">List API</a><br>
+                                    <span class="pc-collapse">Method POST</span><br>
+                                    <code>{{$path}}api/traffic</code><br>
+                                    Send Data Post
+                                    <div class="p-3 color-block bg-green-100">
+                                        <code>
+                                            <b>token</b> Required<br>
+                                            <b>username</b> Required<br>
+                                            <b>traffic</b> Required numeric<br>
+                                            <b>type_traffic</b> Required(gb or mb)<br>
+                                        </code>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
                             <h2 class="accordion-header" id="heading11">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse11" aria-expanded="false" aria-controls="collapse11">
                                     Online User
@@ -281,6 +305,85 @@
                                     {APIKEY}=Token<br>
                                     <span class="pc-collapse">Method GET</span><br>
                                     <code>{{$path}}api/{APIKEY}/online</code><br>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading12">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse12" aria-expanded="false" aria-controls="collapse12">
+                                    Kill User
+                                </button>
+                            </h2>
+                            <div id="collapse12" class="accordion-collapse collapse" aria-labelledby="heading12" data-bs-parent="#accordionExample">
+                                <div class="accordion-body" dir="ltr">
+                                    <a href="{{$path}}cp/settings/api" target="_blank">List API</a><br>
+                                    {APIKEY}=Token<br>
+                                    <span class="pc-collapse">Method GET</span><br>
+                                    <code>{{$path}}api/{APIKEY}/kill/user/{USERNAME}</code><br>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading13">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse13" aria-expanded="false" aria-controls="collapse13">
+                                    Kill PID
+                                </button>
+                            </h2>
+                            <div id="collapse13" class="accordion-collapse collapse" aria-labelledby="heading13" data-bs-parent="#accordionExample">
+                                <div class="accordion-body" dir="ltr">
+                                    <a href="{{$path}}cp/settings/api" target="_blank">List API</a><br>
+                                    {APIKEY}=Token<br>
+                                    <span class="pc-collapse">Method GET</span><br>
+                                    <code>{{$path}}api/{APIKEY}/kill/id/{PID}</code><br>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading14">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse14" aria-expanded="false" aria-controls="collapse14">
+                                    Make Backup
+                                </button>
+                            </h2>
+                            <div id="collapse14" class="accordion-collapse collapse" aria-labelledby="heading14" data-bs-parent="#accordionExample">
+                                <div class="accordion-body" dir="ltr">
+                                    <a href="{{$path}}cp/settings/api" target="_blank">List API</a><br>
+                                    {APIKEY}=Token<br>
+                                    <span class="pc-collapse">Method GET</span><br>
+                                    <code>{{$path}}api/{APIKEY}/backup</code><br>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading15">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse15" aria-expanded="false" aria-controls="collapse15">
+                                    Download Backup
+                                </button>
+                            </h2>
+                            <div id="collapse15" class="accordion-collapse collapse" aria-labelledby="heading15" data-bs-parent="#accordionExample">
+                                <div class="accordion-body" dir="ltr">
+                                    <a href="{{$path}}cp/settings/api" target="_blank">List API</a><br>
+                                    {APIKEY}=Token<br>
+                                    <span class="pc-collapse">Method GET</span><br>
+                                    <code>{{$path}}api/{APIKEY}/backup/dl/{FILENAME}</code><br>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading16">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse16" aria-expanded="false" aria-controls="collapse16">
+                                    Filtering
+                                </button>
+                            </h2>
+                            <div id="collapse16" class="accordion-collapse collapse" aria-labelledby="heading16" data-bs-parent="#accordionExample">
+                                <div class="accordion-body" dir="ltr">
+                                    <a href="{{$path}}cp/settings/api" target="_blank">List API</a><br>
+                                    {APIKEY}=Token<br>
+                                    <span class="pc-collapse">Method GET</span><br>
+                                    <code>{{$path}}api/{APIKEY}/filtering</code><br>
                                 </div>
                             </div>
                         </div>

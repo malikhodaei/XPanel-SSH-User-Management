@@ -18,4 +18,12 @@ class Traffic extends Model
     {
         return $this->belongsTo(Users::class);
     }
+    public function scopeActiveUsers($query)
+    {
+        return $query
+            ->join('users', 'traffic.username', '=', 'users.username')
+            ->where('users.status', 'active')
+            ->orderByRaw('CAST(traffic.total AS SIGNED) DESC')
+            ->select('traffic.*');
+    }
 }
